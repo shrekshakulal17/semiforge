@@ -1,11 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="KLA Restore — AI-powered restoration for degraded semiconductor microscopic inspection images." />
+  <title>KLA Restore — AI-Powered Semiconductor Image Restoration</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" data-lucide="scan-eye"></div>
+        <span class="brand-name">KLA Restore</span>
+      </div>
+
+      <nav class="main-nav">
+        <a href="#restore">Restore</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="status-pill">
+        <span class="status-dot"><span class="status-dot-ping"></span><span class="status-dot-core"></span></span>
+        <span>AI Engine Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <svg class="hero-circuit" preserveAspectRatio="none" viewBox="0 0 1200 500">
+      <path d="M0 90 H260 V180 H520 V60 H860 V220" fill="none" stroke="#4FD8E8" stroke-width="1" />
+      <path d="M1200 400 H940 V300 H700 V420 H360" fill="none" stroke="#8B7FD9" stroke-width="1" />
+      <circle cx="260" cy="90" r="2.5" fill="#4FD8E8" />
+      <circle cx="520" cy="180" r="2.5" fill="#4FD8E8" />
+      <circle cx="860" cy="60" r="2.5" fill="#4FD8E8" />
+      <circle cx="940" cy="400" r="2.5" fill="#4FD8E8" />
+      <circle cx="700" cy="300" r="2.5" fill="#4FD8E8" />
+      <circle cx="360" cy="420" r="2.5" fill="#4FD8E8" />
+    </svg>
+
+    <div class="hero-inner">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span>SEMICON India Hackathon 2026 · Track 1 · sponsored by KLA</span>
+      </div>
+
+      <h1 class="hero-title">
+        Restore the details <span class="hero-title-accent">hidden by degradation.</span>
+      </h1>
+
+      <p class="hero-sub">AI-powered restoration for degraded semiconductor microscopic inspection images.</p>
+
+      <p class="hero-desc">
+        Remove noise, recover structural detail, and reconstruct higher-resolution
+        inspection imagery through a unified restoration pipeline.
+      </p>
+
+      <div class="hero-tags">
+        <span class="tag">SPECKLE</span>
+        <span class="tag">GAUSSIAN</span>
+        <span class="tag">LOW RESOLUTION</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESTORE APP (dynamic) ============ -->
+  <section id="restore" class="restore-section">
+    <div id="app-root"></div>
+  </section>
+
+  <!-- ============ PIPELINE EXPLANATION ============ -->
+  <section id="pipeline" class="pipeline-explain">
+    <div class="section-inner">
+      <h2 class="section-title">How the restoration works</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <span class="explain-n">01</span>
+          <h3>Analyze</h3>
+          <p>Identify degradation characteristics in the input image.</p>
+        </div>
+        <div class="explain-card">
+          <span class="explain-n">02</span>
+          <h3>Denoise</h3>
+          <p>Suppress speckle and Gaussian noise while preserving important structures.</p>
+        </div>
+        <div class="explain-card">
+          <span class="explain-n">03</span>
+          <h3>Reconstruct</h3>
+          <p>Recover missing structural and high-frequency information.</p>
+        </div>
+        <div class="explain-card">
+          <span class="explain-n">04</span>
+          <h3>Super-Resolve</h3>
+          <p>Generate the restored higher-resolution image.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNICAL OVERVIEW ============ -->
+  <section class="tech-overview">
+    <div class="section-inner">
+      <h2 class="section-title">Designed for microscopic inspection imagery</h2>
+      <div class="capability-grid">
+        <div class="capability-card">
+          <div class="capability-icon" data-lucide="scan-line"></div>
+          <h3>Noise Suppression</h3>
+          <p>Speckle and Gaussian degradation handling.</p>
+        </div>
+        <div class="capability-card">
+          <div class="capability-icon" data-lucide="layers"></div>
+          <h3>Structural Preservation</h3>
+          <p>Maintain important edges and microscopic structures.</p>
+        </div>
+        <div class="capability-card">
+          <div class="capability-icon" data-lucide="sparkles"></div>
+          <h3>Super-Resolution</h3>
+          <p>Restore higher-resolution imagery from degraded inputs.</p>
+        </div>
+        <div class="capability-card">
+          <div class="capability-icon" data-lucide="waypoints"></div>
+          <h3>Generalization</h3>
+          <p>Designed to handle variation in image degradation and unseen image distributions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GENERALIZATION FLOW ============ -->
+  <section class="generalization">
+    <div class="section-inner section-inner--narrow">
+      <h2 class="section-title section-title--center">Built with generalization in mind</h2>
+      <p class="generalization-copy">
+        The restoration pipeline is designed to perform beyond training-like imagery and
+        remain robust when image characteristics differ from the data seen during training.
+      </p>
+
+      <div class="flow">
+        <div class="flow-step">Training Distribution</div>
+        <div class="flow-connector"></div>
+        <div class="flow-step">AI Model</div>
+        <div class="flow-connector"></div>
+        <div class="flow-step">Unseen / OOD Images</div>
+        <div class="flow-connector"></div>
+        <div class="flow-step">Robust Restoration</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer id="about" class="site-footer">
+    <div class="footer-inner">
+      <p>KLA Restore — built for SEMICON India Hackathon 2026, Track 1.</p>
+      <p>Not affiliated with or endorsed by KLA Corporation.</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="api.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

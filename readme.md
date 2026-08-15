@@ -9,13 +9,13 @@ This repository contains our team's submission for the **SEMICON India Hackathon
 ---
 
 ## 👥 Team Details
-*   **Team Name:** [Your Team Name]
-*   **Institution:** [Your College/University Name]
+*   **Team Name:** SemiForge
+*   **Institution:** KLE Technological university
 *   **Members & Roles:**
-    *   **Member 1 (Lead):** [Name] - [Role: e.g., Model Architecture & Training] - [Email/Contact]
-    *   **Member 2:** [Name] - [Role: e.g., Data Augmentation & Loss Functions] - [Email/Contact]
-    *   **Member 3:** [Name] - [Role: e.g., Inference Pipeline & H100 GPU Optimization] - [Email/Contact]
-    *   **Member 4:** [Name] - [Role: e.g., Validation & Benchmark Analysis] - [Email/Contact]
+    *   **Member 1 (Lead):** Purvi Patil - Documentation - purvivp2205@gmail.com
+    *   **Member 2:** Diya Shetraddi - AI model training - diyaraddi@gmail.com
+    *   **Member 3:** Sumanyu Kulkarni - AI model training - kulkarnisumanyu8@gmail.com
+    *   **Member 4:** Sreksha Kulal - Gitub repository - shrekshakulal17@gmail.com
 
 ---
 

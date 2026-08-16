@@ -1,26 +1,8 @@
 // api.js
 //
-// API layer for the restoration backend.
-//
-// Right now `restoreImage` returns a mocked result so the frontend can be
-// built and demoed before the Python/PyTorch inference service exists.
-// Swap the body of `restoreImage` for a real fetch() call when the API is
-// ready — the return shape below is the contract the rest of the app
-// expects, so no other file needs to change.
-//
-// Expected real response shape:
-// {
-//   restoredImage: string        // URL or base64 data URI of the restored image
-//   psnr: number | null          // dB
-//   ssim: number | null          // 0–1
-//   lpips: number | null         // 0–1 (lower is better)
-//   inferenceTime: number | null // ms
-//   inputResolution: string      // e.g. "256×256"
-//   outputResolution: string     // e.g. "512×512"
-//   detectedDegradation: string[]
-// }
+// Real API connection to the Python/PyTorch restoration backend.
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'http://127.0.0.1:5000';
 
 const PIPELINE_STAGES = [
   { id: 'analyze', label: 'Analyzing degradation' },
@@ -32,71 +14,153 @@ const PIPELINE_STAGES = [
 ];
 
 /**
- * Restore a degraded inspection image.
- *
- * @param {File} file - the uploaded image file
- * @param {(stageIndex: number) => void} [onStageChange] - optional progress callback,
- *   called as the (simulated, for now) pipeline advances through PIPELINE_STAGES
- * @returns {Promise<{
- *   restoredImage: string,
- *   psnr: number|null,
- *   ssim: number|null,
- *   lpips: number|null,
- *   inferenceTime: number|null,
- *   inputResolution: string,
- *   outputResolution: string,
- *   detectedDegradation: string[],
- * }>}
+ * Send an image to the real PyTorch backend.
  */
 async function restoreImage(file, onStageChange) {
-  // --- MOCK IMPLEMENTATION -------------------------------------------------
-  // Replace everything in this block with a real request once the inference
-  // API is live, e.g.:
-  //
-  // const formData = new FormData()
-  // formData.append('image', file)
-  // const res = await fetch(`${API_BASE_URL}/restore`, { method: 'POST', body: formData })
-  // if (!res.ok) throw new Error('Restoration failed')
-  // return res.json()
 
-  const inputResolution = await readImageResolution(file);
-  const objectUrl = URL.createObjectURL(file);
-
-  for (let i = 0; i < PIPELINE_STAGES.length; i++) {
-    if (onStageChange) onStageChange(i);
-    // eslint-disable-next-line no-await-in-loop
-    await wait(650 + Math.random() * 300);
+  // Show the first stage immediately
+  if (onStageChange) {
+    onStageChange(0);
   }
 
-  return {
-    restoredImage: objectUrl,
-    // Metrics are intentionally left unset — the mock pipeline does not run
-    // a real model, so no PSNR/SSIM/LPIPS/timing values are fabricated.
-    // The UI renders "--" until a real backend response populates these.
-    psnr: null,
-    ssim: null,
-    lpips: null,
-    inferenceTime: null,
-    inputResolution,
-    outputResolution: null,
-    detectedDegradation: ['Speckle noise', 'Gaussian noise', 'Reduced spatial resolution'],
-  };
-  // --- END MOCK IMPLEMENTATION ---------------------------------------------
+  // Prepare image for upload
+  const formData = new FormData();
+  formData.append('image', file);
+
+  // Move through UI stages while backend is processing
+  let currentStage = 0;
+
+  const stageTimer = setInterval(() => {
+
+    if (currentStage < PIPELINE_STAGES.length - 1) {
+      currentStage += 1;
+
+      if (onStageChange) {
+        onStageChange(currentStage);
+      }
+    }
+
+  }, 700);
+
+
+  try {
+
+    // Start timing
+    const startTime = performance.now();
+
+    // Send image to Flask
+    const response = await fetch(
+      `${API_BASE_URL}/restore`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    // Stop stage animation
+    clearInterval(stageTimer);
+
+    if (!response.ok) {
+
+      let message = 'Restoration failed.';
+
+      try {
+        const errorData = await response.json();
+
+        if (errorData.error) {
+          message = errorData.error;
+        }
+
+      } catch (_) {
+        // Ignore JSON parsing failure
+      }
+
+      throw new Error(message);
+    }
+
+    // Backend returns PNG image
+    const blob = await response.blob();
+
+    const restoredImage = URL.createObjectURL(blob);
+
+    const inferenceTime = performance.now() - startTime;
+
+
+    // Tell UI that final stage is complete
+    if (onStageChange) {
+      onStageChange(PIPELINE_STAGES.length - 1);
+    }
+
+
+    // Read original input resolution
+    const inputResolution = await readImageResolution(file);
+
+
+    // Our current model always outputs 512x512
+    const outputResolution = '512 × 512';
+
+
+    return {
+      restoredImage,
+
+      // Real metrics require ground-truth comparison.
+      // We will populate these later in the evaluation pipeline.
+      psnr: null,
+      ssim: null,
+      lpips: null,
+
+      inferenceTime: Number(inferenceTime.toFixed(2)),
+
+      inputResolution,
+      outputResolution,
+
+      detectedDegradation: [
+        'Reduced spatial resolution',
+        'Speckle noise',
+        'Gaussian noise',
+      ],
+    };
+
+  } catch (error) {
+
+    clearInterval(stageTimer);
+
+    console.error('Restoration API error:', error);
+
+    throw error;
+  }
 }
 
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
+/**
+ * Read original image resolution.
+ */
 function readImageResolution(file) {
+
   return new Promise((resolve, reject) => {
+
     const img = new Image();
+
     const url = URL.createObjectURL(file);
+
     img.onload = () => {
-      resolve(`${img.naturalWidth} × ${img.naturalHeight}`);
+
+      resolve(
+        `${img.naturalWidth} × ${img.naturalHeight}`
+      );
+
       URL.revokeObjectURL(url);
     };
-    img.onerror = reject;
+
+    img.onerror = () => {
+
+      URL.revokeObjectURL(url);
+
+      reject(
+        new Error('Could not read image resolution.')
+      );
+    };
+
     img.src = url;
   });
 }
